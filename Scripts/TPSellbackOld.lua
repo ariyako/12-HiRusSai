@@ -1,16 +1,14 @@
---<<Teleport Sellback | Mod by HiRusSai Beta>>
+--<<Teleport Sellback | Mod by HiRusSai>>
 require("libs.Utils")
 require("libs.ScriptConfig")
 
 local config = ScriptConfig.new()
 config:SetParameter("Hotkey", "U", config.TYPE_HOTKEY)
-config:SetParameter("RemainingTime", "0.06", config.TYPE_NUMBER)
 config:Load()
 
 local Screen = client.screenSize.x/1600
 local Active = false
 local Hotkey = config.Hotkey
-local RemainingTime = config.RemainingTime
 local registered  = false
 
 local F14 = drawMgr:CreateFont("F14","Tahoma",14*Screen,550*Screen)
@@ -23,8 +21,8 @@ function onLoad()
 			script:Disable()
 		else
 			registered = true
+			script:RegisterEvent(EVENT_TICK,Tick)
 			script:RegisterEvent(EVENT_KEY,Key)
-			script:RegisterEvent(EVENT_FRAME,Frame)
 			script:UnregisterEvent(onLoad)
 		end
 	end
@@ -43,9 +41,10 @@ function Key(msg,code)
 end
 
 
-function Frame(frame)
-	if not client.connected or client.console then return end
-	
+function Tick( tick )
+	if not client.connected or client.loading or client.console or not SleepCheck() then
+		return
+	end
 	if not Active then return end
 	local me = entityList:GetMyHero()
 	local mp = entityList:GetMyPlayer()
@@ -53,7 +52,7 @@ function Frame(frame)
 	local tp = me:FindItem("item_tpscroll")
 	local tping = me:FindModifier("modifier_teleporting")
 
-	if tp and tping and tping.remainingTime <= RemainingTime then
+	if tping and tping.remainingTime < ((client.latency)/1000) then
 	    mp:SellItem(tp)
 	end
 
@@ -63,10 +62,9 @@ function onClose()
 	collectgarbage("collect")
 	if registered then
 		script:UnregisterEvent(Key)
-		script:UnregisterEvent(Frame)
+		script:UnregisterEvent(Tick)
 		statusText.visible = false
 		registered = false
-		script:RegisterEvent(EVENT_TICK,onLoad)
 	end
 end
 
