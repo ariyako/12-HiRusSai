@@ -44,7 +44,6 @@ function Key(msg,code)
 	end
 end
 
-
 function Frame(frame)
 	if not client.connected or client.console then return end	
 	if not Active then return end
@@ -68,22 +67,6 @@ function Frame(frame)
 		end
 	end
 end
-
---[[
-	local tpBuff = me:FindModifier("modifier_teleporting")
-	
-	if tpBuff then
-		local tpItem = me:FindItem("item_tpscroll")
-		if tpItem and tpItem.charges == 1 then
-			if tpBuff.remainingTime + client.latency/1000 < some_number_mb_0 then
-				entityList:GetMyPlayer():Select(me)
-				entityList:GetMyPlayer():SellItem(tpItem)
-			end
-		end
-       else
-             Sleep(2000)
-       end
-]]--
 
 function onClose()
 	collectgarbage("collect")
