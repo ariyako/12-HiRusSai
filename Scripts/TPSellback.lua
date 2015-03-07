@@ -1,15 +1,17 @@
---<<Teleport Sellback 1.2 | Mod by HiRusSai>>
+--<<Teleport Sellback 1.3 | Mod by HiRusSai>>
 require("libs.Utils")
 require("libs.ScriptConfig")
 
 local config = ScriptConfig.new()
 config:SetParameter("Hotkey", "U", config.TYPE_HOTKEY)
+config:SetParameter("DependOnPing", true, config.TYPE_BOOL)
 config:SetParameter("RemainingTime", "0.06", config.TYPE_NUMBER)
 config:Load()
 
 local Screen = client.screenSize.x/1600
 local Active = false
 local Hotkey = config.Hotkey
+local DependOnPing = config.DependOnPing
 local RemainingTime = config.RemainingTime
 local registered  = false
 
@@ -44,20 +46,44 @@ end
 
 
 function Frame(frame)
-	if not client.connected or client.console then return end
-	
+	if not client.connected or client.console then return end	
 	if not Active then return end
 	local me = entityList:GetMyHero()
-	local mp = entityList:GetMyPlayer()
-
-	local tp = me:FindItem("item_tpscroll")
-	local tping = me:FindModifier("modifier_teleporting")
-
-	if tp and tping and tping.remainingTime <= RemainingTime then
-	    mp:SellItem(tp)
+	local tpBuff = me:FindModifier("modifier_teleporting")
+	
+	if tpBuff then
+		local tpItem = me:FindItem("item_tpscroll")
+		if tpItem and tpItem.charges == 1 then
+			if DependOnPing then
+				if tpBuff.remainingTime + client.latency/1000 < 0.2 then
+					entityList:GetMyPlayer():Select(me)
+					entityList:GetMyPlayer():SellItem(tpItem)
+				end
+			elseif not DependOnPing then
+				if tpBuff.remainingTime <= RemainingTime then
+					entityList:GetMyPlayer():Select(me)
+					entityList:GetMyPlayer():SellItem(tpItem)
+				end
+			end
+		end
 	end
-
 end
+
+--[[
+	local tpBuff = me:FindModifier("modifier_teleporting")
+	
+	if tpBuff then
+		local tpItem = me:FindItem("item_tpscroll")
+		if tpItem and tpItem.charges == 1 then
+			if tpBuff.remainingTime + client.latency/1000 < some_number_mb_0 then
+				entityList:GetMyPlayer():Select(me)
+				entityList:GetMyPlayer():SellItem(tpItem)
+			end
+		end
+       else
+             Sleep(2000)
+       end
+]]--
 
 function onClose()
 	collectgarbage("collect")
