@@ -1,4 +1,4 @@
---<<Teleport Sellback 1.3 | Mod by HiRusSai>>
+--<<Teleport Sellback 1.3a | Mod by HiRusSai>>
 require("libs.Utils")
 require("libs.ScriptConfig")
 
