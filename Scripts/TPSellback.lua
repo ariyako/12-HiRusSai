@@ -54,7 +54,7 @@ function Frame(frame)
 		local tpItem = me:FindItem("item_tpscroll")
 		if tpItem and tpItem.charges == 1 then
 			if DependOnPing then
-				if tpBuff.remainingTime < ((client.latency)/1000) then
+				if tpBuff.remainingTime < ((client.latency)/1100) then
 					entityList:GetMyPlayer():Select(me)
 					entityList:GetMyPlayer():SellItem(tpItem)
 					Sleep(500)
