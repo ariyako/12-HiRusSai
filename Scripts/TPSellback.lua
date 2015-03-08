@@ -1,4 +1,4 @@
---<<Teleport Sellback 1.3a | Mod by HiRusSai>>
+--<<Teleport Sellback temp fix | Mod by HiRusSai>>
 require("libs.Utils")
 require("libs.ScriptConfig")
 
@@ -54,14 +54,16 @@ function Frame(frame)
 		local tpItem = me:FindItem("item_tpscroll")
 		if tpItem and tpItem.charges == 1 then
 			if DependOnPing then
-				if tpBuff.remainingTime <= ((client.latency)/1000) then
+				if tpBuff.remainingTime < ((client.latency)/1000) then
 					entityList:GetMyPlayer():Select(me)
 					entityList:GetMyPlayer():SellItem(tpItem)
+					Sleep(500)
 				end
 			elseif not DependOnPing then
 				if tpBuff.remainingTime <= RemainingTime then
 					entityList:GetMyPlayer():Select(me)
 					entityList:GetMyPlayer():SellItem(tpItem)
+					Sleep(500)
 				end
 			end
 		end
