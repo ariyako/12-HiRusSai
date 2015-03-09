@@ -38,6 +38,7 @@ function Key(msg,code)
 		Active = not Active
 		if Active then
 			statusText.text = "TP Sellback: ON"
+			print("TP Sellback is enabled! Your ping is", clientavgLatency)
 		elseif not Active then
 			statusText.text = "TP Sellback: OFF"
 		end
